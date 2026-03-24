@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip show:*)",
+      "Bash(pip install:*)",
+      "WebSearch",
+      "Bash(python:*)",
+      "WebFetch(domain:ai.google.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(GOOGLE_API_KEY=\"AIzaSyDjy58ndsch7TyvewScImHx5klnZWaQrTg\" python -c \":*)"
+    ]
+  }
+}
