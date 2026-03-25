@@ -56,22 +56,6 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       sendResponse({ ok: true });
       break;
 
-    case 'HIGHLIGHT_CHAIN_INDEX': {
-      clearHighlights();
-      const el = pickerChainEls[msg.index];
-      if (el) {
-        if (REPLACED_TAGS.has(el.tagName)) {
-          const ov = createOverlay(el);
-          if (ov) overlayEls.push(ov);
-        } else {
-          el.classList.add('xpg-highlight');
-          highlightedEls = [el];
-        }
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      sendResponse({ ok: true });
-      break;
-    }
   }
   return true;
 });
@@ -187,52 +171,36 @@ function onClick(e) {
   e.preventDefault();
   e.stopPropagation();
 
-  // Stop hover tracking
   document.removeEventListener('mouseover', onHover, true);
   document.removeEventListener('click',     onClick, true);
   if (hoveredEl) { hoveredEl.classList.remove('xpg-hover'); hoveredEl = null; }
 
   const target = e.target;
 
-  // Build ancestor chain (index 0 = clicked element)
-  pickerChainEls = buildChainElements(target);
-
-  // Highlight the clicked element
+  // Highlight the clicked element immediately
   clearHighlights();
-  pickerChainEls[0].classList.add('xpg-highlight');
-  highlightedEls = [pickerChainEls[0]];
-
-  // Build serialisable chain data (no DOM refs — safe to post)
-  const chain = pickerChainEls.map(el => ({
-    label:              elementLabel(el),
-    outerHTML:          el.outerHTML.substring(0, 2000),
-    elementInfo:        collectElementInfo(el),
-    algorithmicXPaths:  generateAlgorithmicXPaths(el),
-  }));
+  if (REPLACED_TAGS.has(target.tagName)) {
+    const ov = createOverlay(target);
+    if (ov) overlayEls.push(ov);
+  } else {
+    target.classList.add('xpg-highlight');
+    highlightedEls = [target];
+  }
 
   updatePickerBadge('Element captured — see side panel');
 
-  // Notify side panel
-  chrome.runtime.sendMessage({ type: 'ELEMENT_SELECTED', chain }, () => {
-    if (chrome.runtime.lastError) {
-      // Panel not open — user can reopen it; picker badge stays as reminder
-    }
-  });
+  // Send flat payload to side panel (no chain, no ancestor traversal)
+  chrome.runtime.sendMessage({
+    type:        'ELEMENT_SELECTED',
+    xpaths:      generateAlgorithmicXPaths(target),
+    elementInfo: collectElementInfo(target),
+    outerHTML:   target.outerHTML.substring(0, 2000),
+  }, () => { void chrome.runtime.lastError; /* suppress unchecked error */ });
 }
 
 // ---------------------------------------------------------------------------
-// Ancestor chain helpers
+// Element info helpers
 // ---------------------------------------------------------------------------
-
-function buildChainElements(el) {
-  const chain = [];
-  let current = el;
-  while (current && current.tagName && current !== document.documentElement && chain.length < 8) {
-    chain.push(current);
-    current = current.parentElement;
-  }
-  return chain;
-}
 
 function elementLabel(el) {
   const tag = el.tagName.toLowerCase();
