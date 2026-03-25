@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XPath Generator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <span>XPath Generator</span>
+      </div>
+      <button id="settings-toggle" class="icon-btn" title="Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Settings panel (collapsed by default) -->
+    <section id="settings-panel" class="hidden">
+      <label for="api-key-input">Gemini API Key</label>
+      <div class="input-row">
+        <input id="api-key-input" type="password" placeholder="AIza..." autocomplete="off">
+        <button id="save-key-btn" class="btn-secondary">Save</button>
+      </div>
+      <p class="hint-text">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a></p>
+    </section>
+
+    <!-- Main input -->
+    <section id="main-section">
+      <div class="input-row">
+        <input id="goal-input" type="text" placeholder="e.g. article title, author name, post date..." autofocus>
+        <button id="generate-btn" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+          Generate
+        </button>
+      </div>
+
+      <!-- Status bar -->
+      <div id="status-bar" class="hidden"></div>
+
+      <!-- Results -->
+      <div id="results-container" class="hidden">
+        <div class="results-header">
+          <span id="results-label">XPaths found</span>
+          <button id="clear-btn" class="link-btn">Clear highlights</button>
+        </div>
+        <div id="results-list"></div>
+      </div>
+    </section>
+
+    <!-- Picker mode -->
+    <div class="divider"></div>
+    <section id="picker-section">
+      <div class="picker-description">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a6adc8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        Click an element to generate its XPath
+      </div>
+      <button id="picker-btn" class="btn-picker">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+          <path d="M13 13l6 6"></path>
+        </svg>
+        Pick Element
+      </button>
+    </section>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

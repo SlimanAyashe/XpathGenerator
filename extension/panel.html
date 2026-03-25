@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XPath Generator</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </svg>
+      XPath Generator
+    </div>
+    <button id="settings-toggle" class="icon-btn" title="Settings">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06
+                 a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09
+                 A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83
+                 l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09
+                 A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83
+                 l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09
+                 a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83
+                 l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
+                 a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ── Settings ────────────────────────────────────────────────────── -->
+  <section id="settings-section" class="hidden">
+    <label>Gemini API Key</label>
+    <div class="input-row">
+      <input id="api-key-input" type="password" placeholder="AIza..." autocomplete="off">
+      <button id="save-key-btn" class="btn-secondary">Save</button>
+    </div>
+    <p class="hint">
+      Get a free key at
+      <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a>
+      · Shortcut: <kbd>Alt+Shift+X</kbd>
+    </p>
+  </section>
+
+  <!-- ── Natural language input ───────────────────────────────────────── -->
+  <section id="input-section">
+    <div class="input-row">
+      <input id="goal-input" type="text"
+             placeholder="e.g. article title, author name, post date…"
+             autofocus>
+      <button id="generate-btn" class="btn-primary" title="Generate XPaths">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+        Generate
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Status bar ──────────────────────────────────────────────────── -->
+  <div id="status-bar" class="hidden"></div>
+
+  <!-- ── Picker mode banner ──────────────────────────────────────────── -->
+  <div id="picker-banner" class="hidden">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/>
+    </svg>
+    <span>Click any element on the page…</span>
+    <button id="cancel-picker-btn">Cancel</button>
+  </div>
+
+  <!-- ── Breadcrumb (picker result) ──────────────────────────────────── -->
+  <div id="breadcrumb-section" class="hidden">
+    <div class="breadcrumb-label">Element path — click to select ancestor:</div>
+    <div id="breadcrumb"></div>
+  </div>
+
+  <!-- ── Results ─────────────────────────────────────────────────────── -->
+  <section id="results-section" class="hidden">
+    <div class="results-header">
+      <span id="results-label">XPaths</span>
+      <div class="results-actions">
+        <button id="export-btn" class="action-btn" title="Copy all as JSON">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export
+        </button>
+        <button id="clear-btn" class="action-btn" title="Clear highlights">Clear</button>
+      </div>
+    </div>
+    <div id="results-list"></div>
+  </section>
+
+  <!-- ── Picker button ───────────────────────────────────────────────── -->
+  <div class="panel-divider"></div>
+  <section id="picker-section">
+    <p class="section-desc">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      Click any element to generate its XPath
+    </p>
+    <button id="picker-btn" class="btn-picker">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+        <path d="M13 13l6 6"/>
+      </svg>
+      Pick Element
+    </button>
+  </section>
+
+  <!-- ── History ─────────────────────────────────────────────────────── -->
+  <div class="panel-divider"></div>
+  <section id="history-section">
+    <button id="history-toggle" class="section-toggle">
+      <svg class="toggle-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+      History
+      <span id="history-count" class="count-badge hidden">0</span>
+    </button>
+    <div id="history-list" class="hidden"></div>
+  </section>
+
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="panel.js"></script>
+</body>
+</html>
